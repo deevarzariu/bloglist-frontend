@@ -52,14 +52,24 @@ const App = () => {
     getBlogs();
   }, []);
 
+  useEffect(() => {
+    const userString = localStorage.getItem("user");
+    setUser(JSON.parse(userString));
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const userData = await loginService.login({ username, password });
-    console.log('userData', userData);
     setUser(userData);
     setUsername("");
     setPassword("");
+    localStorage.setItem("user", JSON.stringify(userData));
+  }
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
   }
 
   if (!user) {
@@ -69,7 +79,11 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <div>{user.name} logged in.</div>
+      <div>
+        {user.name} logged in.
+        <button onClick={handleLogout}>logout</button>
+      </div>
+      <br />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
