@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
+import Togglable from './components/Togglable';
 
 const styles = {
   error: {
@@ -31,6 +32,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const togglableRef = useRef();
 
   useEffect(() => {
     const getBlogs = async () => {
@@ -75,10 +77,12 @@ const App = () => {
   }
 
   const handleCreatePost = async ({ title, author, url }) => {
+    togglableRef.current.toggleShowContent();
+
     try {
       const newBlog = await blogService.createBlog({ title, author, url });
       setBlogs([...blogs, newBlog]);
-      showSuccessMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`, 5000)
+      showSuccessMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`, 5000);
     } catch (err) {
       showErrorMessage(err.response.data.error, 5000);
     }
@@ -107,7 +111,9 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
       </div>
       <h2>create new</h2>
-      <BlogForm onSubmit={handleCreatePost} />
+      <Togglable ref={togglableRef} buttonLabel="new blog">
+        <BlogForm onSubmit={handleCreatePost} />
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
