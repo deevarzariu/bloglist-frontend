@@ -4,6 +4,26 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 
+const styles = {
+  error: {
+    color: 'red',
+    background: 'lightgrey',
+    fontSize: '20px',
+    borderStyle: 'solid',
+    borderRadius: '5px',
+    padding: '10px',
+    marginBottom: '10px',
+  },
+  success: {
+    color: 'green',
+    background: 'lightgrey',
+    fontSize: '20px',
+    borderStyle: 'solid',
+    borderRadius: '5px',
+    padding: '10px',
+    marginBottom: '10px',
+  }
+}
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -13,39 +33,8 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
-
-  const LoginForm = () => {
-    return <div>
-      <h2>log in to application</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">
-            username
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="Username"
-            value={username}
-            onChange={(e) => { setUsername(e.target.value) }}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">
-            password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="Password"
-            value={password}
-            onChange={(e) => { setPassword(e.target.value) }}
-          />
-        </div>
-        <input type="submit" value="log in" />
-      </form>
-    </div>
-  }
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const getBlogs = async () => {
@@ -57,28 +46,54 @@ const App = () => {
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-    setUser(userData);
-    blogService.setToken(userData.token);
+    if (userData) {
+      setUser(userData);
+      blogService.setToken(userData.token);
+    }
   }, []);
 
-  const handleSubmit = async (e) => {
+  const showSuccessMessage = (message, milliseconds = 1000) => {
+    setSuccessMessage(message)
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, milliseconds);
+  }
+
+  const showErrorMessage = (message, milliseconds = 1000) => {
+    setErrorMessage(message)
+    setTimeout(() => {
+      setErrorMessage("");
+    }, milliseconds);
+  }
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const userData = await loginService.login({ username, password });
-    setUser(userData);
-    setUsername("");
-    setPassword("");
-    localStorage.setItem("user", JSON.stringify(userData));
-    blogService.setToken(userData.token);
+    try {
+      const userData = await loginService.login({ username, password });
+      setUser(userData);
+      setUsername("");
+      setPassword("");
+      localStorage.setItem("user", JSON.stringify(userData));
+      blogService.setToken(userData.token);
+      showSuccessMessage("login successful!", 2000);
+    } catch (err) {
+      showErrorMessage(err.response.data.error, 5000);
+    }
   }
 
   const handleCreatePost = async (e) => {
     e.preventDefault();
-    await blogService.createBlog({ title, author, url });
-    setBlogs([...blogs, newPost]);
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+    try {
+      const newBlog = await blogService.createBlog({ title, author, url });
+      setBlogs([...blogs, newBlog]);
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+      showSuccessMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`, 5000)
+    } catch (err) {
+      showErrorMessage(err.response.data.error, 5000);
+    }
   }
 
   const handleLogout = () => {
@@ -87,12 +102,44 @@ const App = () => {
   }
 
   if (!user) {
-    return <LoginForm />
+    return <div>
+      <h2>log in to application</h2>
+      {errorMessage && <div style={styles.error}>{errorMessage}</div>}
+      <form onSubmit={handleLogin}>
+        <div>
+          <label htmlFor="username">
+            username
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="password">
+            password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <input type="submit" value="log in" />
+      </form>
+    </div>
   }
 
   return (
     <div>
       <h2>blogs</h2>
+      {successMessage && <div style={styles.success}>{successMessage}</div>}
+      {errorMessage && <div style={styles.error}>{errorMessage}</div>}
       <div>
         {user.name} logged in.
         <button onClick={handleLogout}>logout</button>
