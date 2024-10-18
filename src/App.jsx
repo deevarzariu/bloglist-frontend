@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import { useState, useEffect, useRef } from 'react';
+import Blog from './components/Blog';
+import blogService from './services/blogs';
+import loginService from './services/login';
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
 import Togglable from './components/Togglable';
@@ -25,13 +25,13 @@ const styles = {
     padding: '10px',
     marginBottom: '10px',
   }
-}
+};
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const togglableRef = useRef();
 
   useEffect(() => {
@@ -40,12 +40,12 @@ const App = () => {
       const sortedBlogs = [...initialBlogs];
       sortedBlogs.sort((a, b) => b.likes - a.likes);
       setBlogs(sortedBlogs);
-    }
+    };
     getBlogs();
   }, []);
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
+    const userData = JSON.parse(localStorage.getItem('user'));
     if (userData) {
       setUser(userData);
       blogService.setToken(userData.token);
@@ -53,30 +53,30 @@ const App = () => {
   }, []);
 
   const showSuccessMessage = (message, milliseconds = 1000) => {
-    setSuccessMessage(message)
+    setSuccessMessage(message);
     setTimeout(() => {
-      setSuccessMessage("");
+      setSuccessMessage('');
     }, milliseconds);
-  }
+  };
 
   const showErrorMessage = (message, milliseconds = 1000) => {
-    setErrorMessage(message)
+    setErrorMessage(message);
     setTimeout(() => {
-      setErrorMessage("");
+      setErrorMessage('');
     }, milliseconds);
-  }
+  };
 
   const handleLogin = async ({ username, password }) => {
     try {
       const userData = await loginService.login({ username, password });
       setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem('user', JSON.stringify(userData));
       blogService.setToken(userData.token);
-      showSuccessMessage("login successful!", 2000);
+      showSuccessMessage('login successful!', 2000);
     } catch (err) {
       showErrorMessage(err.response.data.error, 5000);
     }
-  }
+  };
 
   const handleCreatePost = async ({ title, author, url }) => {
     togglableRef.current.toggleShowContent();
@@ -88,7 +88,7 @@ const App = () => {
     } catch (err) {
       showErrorMessage(err.response.data.error, 5000);
     }
-  }
+  };
 
   const handleLikeBlog = async (blog) => {
     try {
@@ -100,7 +100,7 @@ const App = () => {
     } catch (err) {
       showErrorMessage(err.response.data.error);
     }
-  }
+  };
 
   const handleRemoveBlog = async (blog) => {
     if (confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
@@ -111,19 +111,19 @@ const App = () => {
         showErrorMessage(err.response.data.error);
       }
     }
-  }
+  };
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem("user");
-  }
+    localStorage.removeItem('user');
+  };
 
   if (!user) {
     return <div>
       <h2>log in to application</h2>
       {errorMessage && <div style={styles.error}>{errorMessage}</div>}
       <LoginForm onSubmit={handleLogin} />
-    </div>
+    </div>;
   }
 
   return (
@@ -143,7 +143,7 @@ const App = () => {
         <Blog key={blog.id} blog={blog} user={user} onLike={handleLikeBlog} onRemove={handleRemoveBlog} />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

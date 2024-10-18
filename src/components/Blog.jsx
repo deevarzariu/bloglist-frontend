@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 const blogStyle = {
   paddingTop: 10,
@@ -6,14 +6,14 @@ const blogStyle = {
   border: 'solid',
   borderWidth: 1,
   marginBottom: 5
-}
+};
 
 const Blog = ({ blog, user, onLike, onRemove }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleShowDetails = () => {
     setShowDetails(!showDetails);
-  }
+  };
 
   return <div style={blogStyle}>
     <div>
@@ -31,7 +31,7 @@ const Blog = ({ blog, user, onLike, onRemove }) => {
         <button onClick={() => onRemove(blog)}>remove</button>
       }
     </div>}
-  </div>
-}
+  </div>;
+};
 
-export default Blog
+export default Blog;

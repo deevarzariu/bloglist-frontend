@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const BlogForm = ({ onSubmit }) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({ title, author, url });
-    setTitle("");
-    setAuthor("");
-    setUrl("");
-  }
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
 
   return <form onSubmit={handleSubmit}>
     <div>
@@ -21,7 +21,7 @@ const BlogForm = ({ onSubmit }) => {
         id="title"
         name="title"
         value={title}
-        onChange={(e) => { setTitle(e.target.value) }}
+        onChange={(e) => { setTitle(e.target.value); }}
       />
     </div>
     <div>
@@ -31,7 +31,7 @@ const BlogForm = ({ onSubmit }) => {
         id="author"
         name="author"
         value={author}
-        onChange={(e) => { setAuthor(e.target.value) }}
+        onChange={(e) => { setAuthor(e.target.value); }}
       />
     </div>
     <div>
@@ -41,11 +41,11 @@ const BlogForm = ({ onSubmit }) => {
         id="url"
         name="url"
         value={url}
-        onChange={(e) => { setUrl(e.target.value) }}
+        onChange={(e) => { setUrl(e.target.value); }}
       />
     </div>
     <input type="submit" value="create" />
   </form>;
-}
+};
 
 export default BlogForm;
