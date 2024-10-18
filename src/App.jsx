@@ -88,6 +88,14 @@ const App = () => {
     }
   }
 
+  const handleLikeBlog = async (blog) => {
+    const payload = { ...blog, likes: ++blog.likes };
+    const updatedBlog = await blogService.updateBlog(payload);
+    updatedBlog.user = blog.user;
+
+    setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog));
+  }
+
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("user");
@@ -115,7 +123,7 @@ const App = () => {
         <BlogForm onSubmit={handleCreatePost} />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} onLike={handleLikeBlog} />
       )}
     </div>
   )
