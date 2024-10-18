@@ -8,7 +8,7 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog, onLike }) => {
+const Blog = ({ blog, user, onLike, onRemove }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleShowDetails = () => {
@@ -26,8 +26,10 @@ const Blog = ({ blog, onLike }) => {
         likes {blog.likes}
         <button onClick={() => onLike(blog)}>like</button>
       </div>
-      {/* add like button */}
       {blog.user && <div>added by {blog.user.name}</div>}
+      {blog.user && user.username === blog.user.username &&
+        <button onClick={() => onRemove(blog)}>remove</button>
+      }
     </div>}
   </div>
 }

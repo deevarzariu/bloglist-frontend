@@ -91,11 +91,26 @@ const App = () => {
   }
 
   const handleLikeBlog = async (blog) => {
-    const payload = { ...blog, likes: ++blog.likes };
-    const updatedBlog = await blogService.updateBlog(payload);
-    updatedBlog.user = blog.user;
+    try {
+      const payload = { ...blog, likes: ++blog.likes };
+      const updatedBlog = await blogService.updateBlog(payload);
+      updatedBlog.user = blog.user;
 
-    setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog));
+      setBlogs(blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog));
+    } catch (err) {
+      showErrorMessage(err.response.data.error);
+    }
+  }
+
+  const handleRemoveBlog = async (blog) => {
+    if (confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.deleteBlog(blog.id);
+        setBlogs(blogs.filter(({ id }) => id !== blog.id));
+      } catch (err) {
+        showErrorMessage(err.response.data.error);
+      }
+    }
   }
 
   const handleLogout = () => {
@@ -125,7 +140,7 @@ const App = () => {
         <BlogForm onSubmit={handleCreatePost} />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} onLike={handleLikeBlog} />
+        <Blog key={blog.id} blog={blog} user={user} onLike={handleLikeBlog} onRemove={handleRemoveBlog} />
       )}
     </div>
   )
