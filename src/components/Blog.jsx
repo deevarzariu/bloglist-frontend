@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
 const blogStyle = {
@@ -33,5 +34,23 @@ const Blog = ({ blog, user, onLike, onRemove }) => {
     </div>}
   </div>;
 };
+
+Blog.propTypes = {
+  blog: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+    likes: PropTypes.number,
+    user: PropTypes.object,
+  }),
+  user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    token: PropTypes.string.isRequired
+  }),
+  onLike: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired
+}
 
 export default Blog;
