@@ -43,6 +43,6 @@ const LoginForm = ({ onSubmit }) => {
 
 LoginForm.propTypes = {
   onSubmit: PropTypes.func.isRequired
-}
+};
 
 export default LoginForm;

@@ -21,7 +21,7 @@ const Blog = ({ blog, user, onLike, onRemove }) => {
       {blog.title} {blog.author}
       <button onClick={toggleShowDetails}>{showDetails ? 'hide' : 'show'}</button>
     </div>
-    {showDetails && <div>
+    <div className='blog-details' style={showDetails ? null : { display: 'none' }}>
       <div>{blog.url}</div>
       <div>
         likes {blog.likes}
@@ -31,7 +31,7 @@ const Blog = ({ blog, user, onLike, onRemove }) => {
       {blog.user && user.username === blog.user.username &&
         <button onClick={() => onRemove(blog)}>remove</button>
       }
-    </div>}
+    </div>
   </div>;
 };
 
@@ -51,6 +51,6 @@ Blog.propTypes = {
   }),
   onLike: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired
-}
+};
 
 export default Blog;

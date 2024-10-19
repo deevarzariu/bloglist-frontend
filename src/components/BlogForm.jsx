@@ -45,12 +45,12 @@ const BlogForm = ({ onSubmit }) => {
         onChange={(e) => { setUrl(e.target.value); }}
       />
     </div>
-    <input type="submit" value="create" />
+    <input type="submit" id="createBtn" value="create" />
   </form>;
 };
 
 BlogForm.propTypes = {
   onSubmit: PropTypes.func.isRequired
-}
+};
 
 export default BlogForm;
